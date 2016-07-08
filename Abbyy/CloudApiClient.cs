@@ -23,7 +23,12 @@ namespace OCR.POC.Abbyy
 
             _client = client;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageStream"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<string> ProcessImageAsync(Stream imageStream, CancellationToken cancellationToken)
         {
             RestRequest request = new RestRequest("processImage") { AlwaysMultipartFormData = true };
