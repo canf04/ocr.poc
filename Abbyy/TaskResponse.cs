@@ -16,7 +16,6 @@ namespace OCR.POC.Abbyy
      */
     public class TaskResponse
     {
-        [XmlAttribute]
         public string id { get; set; }
         public DateTime registrationTime { get; set; }
         public DateTime statusChangeTime { get; set; }
@@ -25,7 +24,6 @@ namespace OCR.POC.Abbyy
         public int credits { get; set; }
         public int estimatedProcessingTime { get; set; }
         public string description { get; set; }
-        [XmlAttribute]
         public string resultUrl { get; set; }
     }
 }
