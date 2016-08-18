@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using OCR.POC.Application;
@@ -29,19 +31,27 @@ namespace OCR.POC.Abbyy
         /// <param name="imageStream"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ProcessImageAsync(Stream imageStream, CancellationToken cancellationToken)
+        public  async Task<string> ProcessImageAsync(Stream imageStream, CancellationToken cancellationToken)
         {
-            RestRequest request = new RestRequest("processImage") { AlwaysMultipartFormData = true };
-            request.AddQueryParameter("profile", "textExtraction");
-
-            using (MemoryStream memoryStream = new MemoryStream())
+            RestRequest request = new RestRequest("processImage") { Method = Method.POST };
+            request.AddQueryParameter("exportFormat", "pdfa");
+ 
+            request.Files.Add(new FileParameter
             {
-                imageStream.CopyTo(memoryStream);
-                request.AddFileBytes("test", memoryStream.ToArray(), "test");
-            }
+                Name = "test",
+                FileName = "test.pdf",
+                ContentLength = imageStream.Length,
+                ContentType = "application/pdf",
+                Writer = s =>
+                {
+                    imageStream.CopyTo(s);
+                }
+            });
 
-            IRestResponse<TaskResponse> response = await _client.ExecutePostTaskAsync<TaskResponse>(request, cancellationToken);
 
+            IRestResponse<TaskResponse> response = await _client.ExecuteTaskAsync<TaskResponse>(request);
+
+            //return Task.FromResult(response.Data.id);
             return response.Data.id;
         }
 
